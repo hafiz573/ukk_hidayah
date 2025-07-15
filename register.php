@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $query = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
         if (mysqli_query($connect, $query)) {
-            echo "<script>alert('Registration successful!');</script>";
+            echo "<script>alert('Registration successful!'); window.location='login.php';</script>";
         } else {
             echo "<script>alert('Error: " . mysqli_error($connect) . "');</script>";
         }

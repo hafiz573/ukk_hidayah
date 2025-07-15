@@ -53,7 +53,7 @@ session_start();
       <nav id="navmenu" class="navmenu">
           <ul>
             <li>
-              <a href="index.html">Beranda<br /></a>
+              <a href="index.php">Beranda<br /></a>
             </li>
             <li><a href="about.php">Tentang RT</a></li>
             <li><a href="portfolio.php" class="active">portfolio</a></li>

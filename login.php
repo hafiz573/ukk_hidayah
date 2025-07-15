@@ -1,20 +1,26 @@
 <?php
+session_start(); // WAJIB di atas
 include 'backend/config/connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = mysqli_real_escape_string($connect, $_POST['username']);
+    $password = mysqli_real_escape_string($connect, $_POST['password']);
 
+    // Ambil user dari database
     $query = "SELECT * FROM users WHERE username = '$username' AND password='$password'";
     $result = mysqli_query($connect, $query);
 
     if (mysqli_num_rows($result) > 0) {
-        session_start();
-        $_SESSION['username'] = $username;
-        header("Location: data-warga.php");
-        exit();
+        $user = mysqli_fetch_assoc($result);
+
+        // Simpan ke session
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role']     = $user['role']; // Pastikan kolom 'role' ada di tabel users
+
+        echo "<script>alert('Login berhasil!'); window.location='index.php';</script>";
+        exit;
     } else {
-        echo "<script>alert('Invalid username or password');</script>";
+        echo "<script>alert('Username atau password salah!');</script>";
     }
 }
 ?>
@@ -41,14 +47,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       text-align: center;
     }
     .login-container img {
-  max-width: 200px;
-  width: 100%;
-  height: auto;
-  /* margin-bottom: 5px; */
+      width: 150px; /* logo diperbesar */
+      margin-bottom: 20px;
     }
     .login-container h4 {
       margin-bottom: 25px;
-      font-weight: 500px;
+      font-weight: 500;
     }
     .form-control {
       padding: 10px;
@@ -69,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   <div class="login-container">
     <!-- Logo -->
-    <img src="backend/cssadmin/logort.jpg" alt="Logo">
+    <img src="backend/cssadmin/logodepan.jpg" alt="Logo SI-KAMPUNG JOS">
 
     <!-- Judul -->
     <h4>Silahkan Login</h4>

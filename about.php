@@ -56,7 +56,7 @@
             <li><a href="about.php" class="active">Tentang RT</a></li>
             <li><a href="portfolio.php">portfolio</a></li>
             <li><a href="contact.php">Hubungi</a></li>
-            <li><a href="team.html">Pengurus</a></li>
+            <li><a href="team.php">Pengurus</a></li>
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
               <li>
                 <a href="admin.php" class="btn btn-warning">Admin</a>

@@ -53,17 +53,18 @@ session_start();
       <nav id="navmenu" class="navmenu">
           <ul>
             <li>
-              <a href="index.html" class="active">Beranda<br /></a>
+              <a href="index.php" class="active">Beranda<br /></a>
             </li>
             <li><a href="about.php">Tentang RT</a></li>
             <li><a href="portfolio.php">portfolio</a></li>
             <li><a href="contact.php">Hubungi</a></li>
             <li><a href="team.php">Pengurus</a></li>
-            <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
+            <?php 
+            if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
               <li>
-                <a href="admin.php" class="btn btn-warning">Admin</a>
+                <a href="data-kas.php">Admin</a>
               </li>
-            <?php endif; ?>
+          <?php endif; ?>
           </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>

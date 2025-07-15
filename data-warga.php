@@ -1,8 +1,8 @@
 <?php
 // contoh data dummy (nantinya bisa diambil dari database)
 $warga = [
-  ["id" => "001", "nama" => "Alexander With Drove", "alamat" => "Jl. A Yani No.5", "pekerjaan" => "Wiraswasta bengkel", "status" => "Suami Nyaihem", "foto" => "foto1.jpg"],
-  ["id" => "002", "nama" => "Nyaihem", "alamat" => "Jl. Melati No.3", "pekerjaan" => "Guru", "status" => "Istri/Aurorak W Drove", "foto" => "foto2.jpg"],
+  ["id" => "001", "nama" => "Alexander With Drove", "alamat" => "Jl. A Yani No.5", "pekerjaan" => "Wiraswasta bengkel", "status" => "Suami Nyaihem", "foto" => "Alexander.png"],
+  ["id" => "002", "nama" => "Ngatinem", "alamat" => "Jl. Melati No.3", "pekerjaan" => "Guru", "status" => "Istri/Aurorak W Drove", "foto" => "Ngatinem.jpg"],
 ];
 ?>
 
@@ -35,7 +35,7 @@ $warga = [
     <!-- Header -->
     <header class="bg-white shadow p-4 flex justify-between items-center">
       <h1 class="text-xl font-bold">Data Warga RT 04 / RW 02</h1>
-      <img src="backend/cssadmin/logort.jpg" alt="Logo RT" class="w-24">
+      <img src="backend/cssadmin/logodepan.jpg" alt="Logo RT" class="w-24">
     </header>
 
     <!-- Table Data -->
@@ -60,7 +60,7 @@ $warga = [
             <td class="py-2 px-4"><?= $row['pekerjaan'] ?></td>
             <td class="py-2 px-4"><?= $row['status'] ?></td>
             <td class="py-2 px-4 text-center">
-              <img src="uploads/<?= $row['foto'] ?>" class="w-10 h-10 rounded-full mx-auto">
+              <img src="assets/img/foto_warga/<?= $row['foto'] ?>" class="w-10 h-10 rounded-full mx-auto">
             </td>
           </tr>
           <?php endforeach; ?>

@@ -52,7 +52,7 @@ $kas = [
           <option>November</option>
           <option>Desember</option>
         </select>
-        <img src="backend/cssadmin/logort.jpg" alt="Logo RT" class="w-24">
+        <img src="backend/cssadmin/logodepan.jpg" alt="Logo RT" class="w-24">
       </div>
     </header>
 
