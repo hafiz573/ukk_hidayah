@@ -9,7 +9,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = mysqli_query($connect, $query);
 
     if (mysqli_num_rows($result) > 0) {
-        echo "<script>alert('Login berhasil!');</script>";
+        session_start();
+        $_SESSION['username'] = $username;
+        header("Location: data-warga.php");
+        exit();
     } else {
         echo "<script>alert('Invalid username or password');</script>";
     }
