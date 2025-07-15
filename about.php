@@ -51,9 +51,9 @@
         <nav id="navmenu" class="navmenu">
           <ul>
             <li>
-              <a href="index.html" class="active">Beranda<br /></a>
+              <a href="index.html">Beranda<br /></a>
             </li>
-            <li><a href="about.php">Tentang RT</a></li>
+            <li><a href="about.php" class="active">Tentang RT</a></li>
             <li><a href="portfolio.php">portfolio</a></li>
             <li><a href="contact.php">Hubungi</a></li>
             <li><a href="team.html">Pengurus</a></li>

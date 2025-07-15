@@ -54,12 +54,12 @@ session_start();
       <nav id="navmenu" class="navmenu">
           <ul>
             <li>
-              <a href="index.html" class="active">Beranda<br /></a>
+              <a href="index.html">Beranda<br /></a>
             </li>
             <li><a href="about.php">Tentang RT</a></li>
             <li><a href="portfolio.php">portfolio</a></li>
             <li><a href="contact.php">Hubungi</a></li>
-            <li><a href="team.php">Pengurus</a></li>
+            <li><a href="team.php" class="active">Pengurus</a></li>
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
               <li>
                 <a href="admin.php" class="btn btn-warning">Admin</a>
