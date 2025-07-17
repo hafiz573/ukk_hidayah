@@ -1,11 +1,14 @@
 <?php
-// contoh data dummy (nantinya bisa diambil dari database)
-$warga = [
-  ["id" => "001", "nama" => "Alexander With Drove", "alamat" => "Jl. A Yani No.5", "pekerjaan" => "Wiraswasta bengkel", "status" => "Suami Nyaihem", "foto" => "Alexander.png"],
-  ["id" => "002", "nama" => "Ngatinem", "alamat" => "Jl. Melati No.3", "pekerjaan" => "Guru", "status" => "Istri/Aurorak W Drove", "foto" => "Ngatinem.jpg"],
-];
-?>
+include 'backend/config/connect.php';
 
+// Ambil semua data warga
+$query = mysqli_query($connect, "SELECT * FROM warga");
+
+$warga = [];
+while($row = mysqli_fetch_assoc($query)){
+    $warga[] = $row;
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -23,8 +26,10 @@ $warga = [
       <h2 class="text-lg font-bold">Menu - Warga</h2>
     </div>
     <nav class="flex-1 p-4 space-y-2">
-      <a href="data-warga.php" class="block py-2 px-3 rounded hover:bg-gray-700">📋 Data Warga</a>
+      <a href="data-warga.php" class="block py-2 px-3 rounded bg-gray-700">📋 Data Warga</a>
       <a href="data-kas.php" class="block py-2 px-3 rounded hover:bg-gray-700">💰 Data Kas</a>
+      <a href="tambah-kas.php" class="block py-2 px-3 rounded hover:bg-gray-700">➕ Tambah Data Kas</a>
+      <a href="tambah-warga.php" class="block py-2 px-3 rounded hover:bg-gray-700">➕ Tambah Warga</a>
       <a href="logout.php" class="block py-2 px-3 rounded hover:bg-red-600 mt-4">🚪 Keluar</a>
     </nav>
   </aside>
@@ -43,7 +48,7 @@ $warga = [
       <table class="min-w-full bg-white rounded-lg shadow">
         <thead>
           <tr class="bg-gray-200 text-gray-700">
-            <th class="py-2 px-4 text-left">ID</th>
+            <th class="py-2 px-4 text-left">NIK</th>
             <th class="py-2 px-4 text-left">Nama</th>
             <th class="py-2 px-4 text-left">Alamat</th>
             <th class="py-2 px-4 text-left">Pekerjaan</th>
@@ -52,18 +57,28 @@ $warga = [
           </tr>
         </thead>
         <tbody>
-          <?php foreach($warga as $row): ?>
-          <tr class="border-b hover:bg-gray-50">
-            <td class="py-2 px-4"><?= $row['id'] ?></td>
-            <td class="py-2 px-4"><?= $row['nama'] ?></td>
-            <td class="py-2 px-4"><?= $row['alamat'] ?></td>
-            <td class="py-2 px-4"><?= $row['pekerjaan'] ?></td>
-            <td class="py-2 px-4"><?= $row['status'] ?></td>
-            <td class="py-2 px-4 text-center">
-              <img src="assets/img/foto_warga/<?= $row['foto'] ?>" class="w-10 h-10 rounded-full mx-auto">
-            </td>
-          </tr>
-          <?php endforeach; ?>
+          <?php if(empty($warga)): ?>
+            <tr>
+              <td colspan="6" class="text-center py-4">Belum ada data warga</td>
+            </tr>
+          <?php else: ?>
+            <?php foreach($warga as $row): ?>
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-2 px-4"><?= $row['id_nik'] ?></td>
+              <td class="py-2 px-4"><?= $row['nama'] ?></td>
+              <td class="py-2 px-4"><?= $row['alamat'] ?></td>
+              <td class="py-2 px-4"><?= $row['pekerjaan'] ?></td>
+              <td class="py-2 px-4"><?= $row['status_keluarga'] ?></td>
+              <td class="py-2 px-4 text-center">
+                <?php if(!empty($row['foto'])): ?>
+                  <img src="assets/img/foto_warga/<?= $row['foto'] ?>" class="w-10 h-10 rounded-full mx-auto">
+                <?php else: ?>
+                  <span class="text-gray-400 italic">Belum ada foto</span>
+                <?php endif; ?>
+              </td>
+            </tr>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </tbody>
       </table>
     </main>

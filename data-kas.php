@@ -1,12 +1,27 @@
 <?php
-// contoh data dummy kas warga
-$kas = [
-  ["nama" => "Alexander With Drove", "status" => "Belum", "jumlah" => ""],
-  ["nama" => "Nyaihem", "status" => "Sudah", "jumlah" => "Rp25.000"],
-  ["nama" => "Joko Susanto", "status" => "Belum", "jumlah" => ""],
-];
-?>
+include 'backend/config/connect.php';
 
+// Ambil data kas dari database
+$query = mysqli_query($connect, "SELECT * FROM kas");
+$kas = [];
+while($row = mysqli_fetch_assoc($query)){
+    // Hitung total pembayaran
+    $total_bayar = 0;
+    for($i=1; $i<=12; $i++){
+        $bulan = "bln_".$i;
+        $total_bayar += $row[$bulan];
+    }
+
+    // Cek status: jika semua bulan = 0 berarti belum
+    $status = ($total_bayar > 0) ? "Sudah" : "Belum";
+
+    $kas[] = [
+        "nama"   => $row['id_nik'], // bisa diganti join dengan tabel warga
+        "status" => $status,
+        "jumlah" => "Rp".number_format($total_bayar,0,",",".")
+    ];
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -26,6 +41,8 @@ $kas = [
     <nav class="flex-1 p-4 space-y-2">
       <a href="data-warga.php" class="block py-2 px-3 rounded hover:bg-gray-700">📋 Data Warga</a>
       <a href="data-kas.php" class="block py-2 px-3 rounded hover:bg-gray-700">💰 Data Kas</a>
+      <a href="tambah-kas.php" class="block py-2 px-3 rounded hover:bg-gray-700">➕ Tambah Data Kas</a>
+      <a href="tambah-warga.php" class="block py-2 px-3 rounded hover:bg-gray-700">➕ Tambah Warga</a>
       <a href="logout.php" class="block py-2 px-3 rounded hover:bg-red-600 mt-4">🚪 Keluar</a>
     </nav>
   </aside>
@@ -61,25 +78,29 @@ $kas = [
       <table class="min-w-full bg-white rounded-lg shadow">
         <thead>
           <tr class="bg-gray-200 text-gray-700">
-            <th class="py-2 px-4 text-left">Nama Warga</th>
+            <th class="py-2 px-4 text-left">NIK / Nama</th>
             <th class="py-2 px-4 text-center">Status Pembayaran</th>
-            <th class="py-2 px-4 text-right">Jumlah</th>
+            <th class="py-2 px-4 text-right">Total Bayar</th>
           </tr>
         </thead>
         <tbody>
-          <?php foreach($kas as $row): ?>
-          <tr class="border-b hover:bg-gray-50">
-            <td class="py-2 px-4"><?= $row['nama'] ?></td>
-            <td class="py-2 px-4 text-center">
-              <?php if($row['status']=="Sudah"): ?>
-                <span class="text-green-600 font-semibold">✅ Sudah</span>
-              <?php else: ?>
-                <span class="text-red-600 font-semibold">❌ Belum</span>
-              <?php endif; ?>
-            </td>
-            <td class="py-2 px-4 text-right"><?= $row['jumlah'] ?></td>
-          </tr>
-          <?php endforeach; ?>
+          <?php if(empty($kas)): ?>
+            <tr><td colspan="3" class="text-center py-4">Belum ada data kas</td></tr>
+          <?php else: ?>
+            <?php foreach($kas as $row): ?>
+            <tr class="border-b hover:bg-gray-50">
+              <td class="py-2 px-4"><?= htmlspecialchars($row['nama']) ?></td>
+              <td class="py-2 px-4 text-center">
+                <?php if($row['status']=="Sudah"): ?>
+                  <span class="text-green-600 font-semibold">✅ Sudah</span>
+                <?php else: ?>
+                  <span class="text-red-600 font-semibold">❌ Belum</span>
+                <?php endif; ?>
+              </td>
+              <td class="py-2 px-4 text-right"><?= $row['jumlah'] ?></td>
+            </tr>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </tbody>
       </table>
     </main>
