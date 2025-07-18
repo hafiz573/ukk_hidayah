@@ -1,5 +1,5 @@
 <?php
-include 'backend/config/connect.php';
+include '../backend/config/connect.php';
 
 // Ambil data warga untuk dropdown
 $query_warga = mysqli_query($connect, "SELECT id_nik, nama FROM warga ORDER BY nama ASC");
@@ -7,6 +7,7 @@ $query_warga = mysqli_query($connect, "SELECT id_nik, nama FROM warga ORDER BY n
 // Proses simpan jika form disubmit
 if(isset($_POST['simpan'])){
     $id_nik     = mysqli_real_escape_string($connect, $_POST['id_nik']);
+    $nama       = mysqli_real_escape_string($connect, $_POST['nama']);
     $bln_1      = $_POST['bln_1'] ?: 0;
     $bln_2      = $_POST['bln_2'] ?: 0;
     $bln_3      = $_POST['bln_3'] ?: 0;

@@ -1,5 +1,5 @@
 <?php
-include 'backend/config/connect.php';
+include '../backend/config/connect.php';
 
 // Ambil semua data warga
 $query = mysqli_query($connect, "SELECT * FROM warga");

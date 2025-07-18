@@ -1,5 +1,5 @@
 <?php
-include 'backend/config/connect.php';
+include '../backend/config/connect.php';
 
 if(isset($_POST['simpan'])){
     $id_nik         = mysqli_real_escape_string($connect, $_POST['id_nik']);

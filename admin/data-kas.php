@@ -1,8 +1,13 @@
 <?php
-include 'backend/config/connect.php';
+include '../backend/config/connect.php';
 
-// Ambil data kas dari database
-$query = mysqli_query($connect, "SELECT * FROM kas");
+// Ambil data kas + nama warga dengan JOIN
+$query = mysqli_query($connect, "
+    SELECT k.*, w.nama 
+    FROM kas k 
+    LEFT JOIN warga w ON k.id_nik = w.id_nik
+");
+
 $kas = [];
 while($row = mysqli_fetch_assoc($query)){
     // Hitung total pembayaran
@@ -16,7 +21,8 @@ while($row = mysqli_fetch_assoc($query)){
     $status = ($total_bayar > 0) ? "Sudah" : "Belum";
 
     $kas[] = [
-        "nama"   => $row['id_nik'], // bisa diganti join dengan tabel warga
+        "nik"    => $row['id_nik'],
+        "nama"   => $row['nama'] ?? "Tidak Diketahui",
         "status" => $status,
         "jumlah" => "Rp".number_format($total_bayar,0,",",".")
     ];
@@ -78,17 +84,19 @@ while($row = mysqli_fetch_assoc($query)){
       <table class="min-w-full bg-white rounded-lg shadow">
         <thead>
           <tr class="bg-gray-200 text-gray-700">
-            <th class="py-2 px-4 text-left">NIK / Nama</th>
+            <th class="py-2 px-4 text-left">NIK</th>
+            <th class="py-2 px-4 text-left">Nama</th>
             <th class="py-2 px-4 text-center">Status Pembayaran</th>
             <th class="py-2 px-4 text-right">Total Bayar</th>
           </tr>
         </thead>
         <tbody>
           <?php if(empty($kas)): ?>
-            <tr><td colspan="3" class="text-center py-4">Belum ada data kas</td></tr>
+            <tr><td colspan="4" class="text-center py-4">Belum ada data kas</td></tr>
           <?php else: ?>
             <?php foreach($kas as $row): ?>
             <tr class="border-b hover:bg-gray-50">
+              <td class="py-2 px-4"><?= htmlspecialchars($row['nik']) ?></td>
               <td class="py-2 px-4"><?= htmlspecialchars($row['nama']) ?></td>
               <td class="py-2 px-4 text-center">
                 <?php if($row['status']=="Sudah"): ?>
