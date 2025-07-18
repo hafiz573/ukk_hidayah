@@ -10,12 +10,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($password !== $confirm_password) {
         echo "<script>alert('Passwords do not match');</script>";
     } else {
-        // cek apakah id_nik sudah ada di warga
-        $cek = mysqli_query($connect, "SELECT id_nik FROM warga WHERE id_nik='$id_nik'");
-        if (mysqli_num_rows($cek) == 0) {
-            // kalau belum ada → otomatis tambahkan ke warga
-            mysqli_query($connect, "INSERT INTO warga (id_nik, nama) VALUES ('$id_nik', '$username')");
-        }
+        // // cek apakah id_nik sudah ada di warga
+        // $cek = mysqli_query($connect, "SELECT id_nik FROM warga WHERE id_nik='$id_nik'");
+        // if (mysqli_num_rows($cek) == 0) {
+        //     // kalau belum ada → otomatis tambahkan ke warga
+        //     mysqli_query($connect, "INSERT INTO warga (id_nik, nama) VALUES ('$id_nik', '$username')");
+        // }
 
         // baru insert ke users
         $query = "INSERT INTO users (id_nik, username, password) VALUES ('$id_nik', '$username', '$password')";
