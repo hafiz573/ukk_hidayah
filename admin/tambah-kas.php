@@ -7,28 +7,33 @@ $query_warga = mysqli_query($connect, "SELECT id_nik, nama FROM warga ORDER BY n
 // Proses simpan jika form disubmit
 if(isset($_POST['simpan'])){
     $id_nik     = mysqli_real_escape_string($connect, $_POST['id_nik']);
-    $nama       = mysqli_real_escape_string($connect, $_POST['nama']);
-    $bln_1      = $_POST['bln_1'] ?: 0;
-    $bln_2      = $_POST['bln_2'] ?: 0;
-    $bln_3      = $_POST['bln_3'] ?: 0;
-    $bln_4      = $_POST['bln_4'] ?: 0;
-    $bln_5      = $_POST['bln_5'] ?: 0;
-    $bln_6      = $_POST['bln_6'] ?: 0;
-    $bln_7      = $_POST['bln_7'] ?: 0;
-    $bln_8      = $_POST['bln_8'] ?: 0;
-    $bln_9      = $_POST['bln_9'] ?: 0;
-    $bln_10     = $_POST['bln_10'] ?: 0;
-    $bln_11     = $_POST['bln_11'] ?: 0;
-    $bln_12     = $_POST['bln_12'] ?: 0;
-    $keterangan = mysqli_real_escape_string($connect, $_POST['keterangan']);
 
-    $sql = "INSERT INTO kas (id_nik, bln_1, bln_2, bln_3, bln_4, bln_5, bln_6, bln_7, bln_8, bln_9, bln_10, bln_11, bln_12, keterangan)
-            VALUES ('$id_nik', '$bln_1', '$bln_2', '$bln_3', '$bln_4', '$bln_5', '$bln_6', '$bln_7', '$bln_8', '$bln_9', '$bln_10', '$bln_11', '$bln_12', '$keterangan')";
-    
-    if(mysqli_query($connect, $sql)){
-        echo "<script>alert('Data kas berhasil ditambahkan!'); window.location='data-kas.php';</script>";
+    // Jika tidak memilih warga
+    if(empty($id_nik)){
+        echo "<script>alert('Silakan pilih warga terlebih dahulu!');</script>";
     } else {
-        echo "<script>alert('Gagal menambahkan data: ".mysqli_error($connect)."');</script>";
+        // Ambil semua bulan (default 0)
+        $bln = [];
+        for($i=1; $i<=12; $i++){
+            $bln[$i] = isset($_POST["bln_$i"]) && $_POST["bln_$i"] !== "" ? $_POST["bln_$i"] : 0;
+        }
+
+        $keterangan = mysqli_real_escape_string($connect, $_POST['keterangan']);
+
+        $sql = "INSERT INTO kas 
+                (id_nik, bln_1, bln_2, bln_3, bln_4, bln_5, bln_6, bln_7, bln_8, bln_9, bln_10, bln_11, bln_12, keterangan)
+                VALUES (
+                    '$id_nik',
+                    '{$bln[1]}','{$bln[2]}','{$bln[3]}','{$bln[4]}','{$bln[5]}','{$bln[6]}',
+                    '{$bln[7]}','{$bln[8]}','{$bln[9]}','{$bln[10]}','{$bln[11]}','{$bln[12]}',
+                    '$keterangan'
+                )";
+
+        if(mysqli_query($connect, $sql)){
+            echo "<script>alert('✅ Data kas berhasil ditambahkan!'); window.location='data-kas.php';</script>";
+        } else {
+            echo "<script>alert('❌ Gagal menambahkan data: ".mysqli_error($connect)."');</script>";
+        }
     }
 }
 ?>
@@ -53,7 +58,7 @@ if(isset($_POST['simpan'])){
       <a href="data-warga.php" class="block py-2 px-3 rounded hover:bg-gray-700">📋 Data Warga</a>
       <a href="data-kas.php" class="block py-2 px-3 rounded hover:bg-gray-700">💰 Data Kas</a>
       <a href="tambah-kas.php" class="block py-2 px-3 rounded hover:bg-gray-700">➕ Tambah Data Kas</a>
-        <a href="tambah-warga.php" class="block py-2 px-3 rounded hover:bg-gray-700">➕ Tambah Warga</a>
+      <a href="tambah-warga.php" class="block py-2 px-3 rounded hover:bg-gray-700">➕ Tambah Warga</a>
       <a href="logout.php" class="block py-2 px-3 rounded hover:bg-red-600 mt-auto">🚪 Keluar</a>
     </nav>
   </aside>
@@ -77,7 +82,7 @@ if(isset($_POST['simpan'])){
             <option value="">-- Pilih Warga --</option>
             <?php while($row = mysqli_fetch_assoc($query_warga)): ?>
               <option value="<?= $row['id_nik'] ?>">
-                <?= $row['nama'] ?> (<?= $row['id_nik'] ?>)
+                <?= htmlspecialchars($row['nama']) ?> (<?= htmlspecialchars($row['id_nik']) ?>)
               </option>
             <?php endwhile; ?>
           </select>
@@ -101,7 +106,7 @@ if(isset($_POST['simpan'])){
         <!-- Keterangan -->
         <div class="mt-4">
           <label class="block font-semibold mb-2">Keterangan</label>
-          <textarea name="keterangan" class="w-full border rounded px-3 py-2" rows="3" placeholder="Contoh: Pembayaran sebagian, dll"></textarea>
+          <textarea name="keterangan" class="w-full border rounded px-3 py-2" rows="3" placeholder="Contoh: Pembayaran sebagian, cicilan, dll"></textarea>
         </div>
 
         <!-- Tombol -->
