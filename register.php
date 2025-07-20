@@ -10,24 +10,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($password !== $confirm_password) {
         echo "<script>alert('Passwords do not match');</script>";
     } else {
-        // // HASH password biar aman
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // 1️⃣ Tambahkan ke warga (kalau belum ada)
-        mysqli_query(
-            $connect, 
-            "INSERT IGNORE INTO warga (id_nik, nama) VALUES ('$id_nik', '$username')"
-        );
-
-        // 2️⃣ Tambahkan ke kas (kalau belum ada)
-        mysqli_query(
-            $connect, 
-            "INSERT IGNORE INTO kas (id_nik, nama) VALUES ('$id_nik', '$username')"
-        );
-
-        // 3️⃣ Tambahkan ke users
+        // Hanya simpan ke tabel users
         $query = "INSERT INTO users (id_nik, username, password, role) 
-                  VALUES ('$id_nik', '$username', '$hashed_password', 'Warga')";
+                  VALUES ('$id_nik', '$username', '$password', 'Warga')";
 
         if (mysqli_query($connect, $query)) {
             echo "<script>alert('Registration successful!'); window.location='login.php';</script>";
@@ -50,12 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container">
         <h2>Register</h2>
         <form method="POST" action="">
-            <!-- Input NIK manual -->
             <div class="mb-3">
                 <label for="id_nik" class="form-label">NIK</label>
                 <input type="text" class="form-control" id="id_nik" name="id_nik" required>
             </div>
-
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" class="form-control" id="username" name="username" required>
