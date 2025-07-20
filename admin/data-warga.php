@@ -1,94 +1,184 @@
 <?php
-include '../backend/config/connect.php';
+include 'check.php'; 
+include '../backend/config/connect.php'; // koneksi ke DB
 
 // Ambil semua data warga
-$query = mysqli_query($connect, "SELECT * FROM warga");
-
-$warga = [];
-while($row = mysqli_fetch_assoc($query)){
-    $warga[] = $row;
+$warga_data = [];
+$result = mysqli_query($connect, "SELECT * FROM warga");
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $warga_data[] = $row;
+    }
 }
 ?>
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Data Warga</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Warga Management</title>
+
+    <?php include 'includes/css.php'; ?>
 </head>
-<body class="bg-gray-100">
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
 
-<div class="flex h-screen">
+    <!-- Navbar -->
+    <?php include 'includes/header.php'; ?>
 
-  <!-- Sidebar -->
-  <aside class="w-64 bg-gray-800 text-white flex flex-col">
-    <div class="p-4 text-center border-b border-gray-700">
-      <h2 class="text-lg font-bold">Menu - Warga</h2>
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="container-fluid">
+
+                <!-- Tombol Tambah -->
+                <div class="row mb-3">
+                    <div class="col-12 text-right">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#addModal">
+                            <i class="fas fa-plus"></i> Add New Warga
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabel Warga -->
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>№</th>
+                                    <th>ID NIK</th>
+                                    <th>Nomor KK</th>
+                                    <th>Nama</th>
+                                    <th>Alamat</th>
+                                    <th>Pekerjaan</th>
+                                    <th>Status Keluarga</th>
+                                    <th width="150px">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php $no = 1; foreach ($warga_data as $w): ?>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= $w['id_nik'] ?></td>
+                                    <td><?= $w['nomor_kk'] ?></td>
+                                    <td><?= $w['nama'] ?></td>
+                                    <td><?= $w['alamat'] ?></td>
+                                    <td><?= $w['pekerjaan'] ?></td>
+                                    <td><?= $w['status_keluarga'] ?></td>
+                                    <td>
+                                        <!-- Tombol Edit -->
+                                        <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal<?= $w['id_nik'] ?>">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <!-- Tombol Delete -->
+                                        <a href="delete_warga.php?id=<?= $w['id_nik'] ?>" 
+                                           class="btn btn-sm btn-danger"
+                                           onclick="return confirm('Delete this entry?')">
+                                           <i class="fas fa-trash"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+
+                                <!-- Modal Edit -->
+                                <div class="modal fade" id="editModal<?= $w['id_nik'] ?>" tabindex="-1">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <form action="update_warga.php" method="POST">
+                                                <input type="hidden" name="id_nik" value="<?= $w['id_nik'] ?>">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Edit Warga</h5>
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label>Nomor KK</label>
+                                                        <input type="text" name="nomor_kk" class="form-control" value="<?= $w['nomor_kk'] ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Nama</label>
+                                                        <input type="text" name="nama" class="form-control" value="<?= $w['nama'] ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Alamat</label>
+                                                        <input type="text" name="alamat" class="form-control" value="<?= $w['alamat'] ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Pekerjaan</label>
+                                                        <input type="text" name="pekerjaan" class="form-control" value="<?= $w['pekerjaan'] ?>">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Status Keluarga</label>
+                                                        <input type="text" name="status_keluarga" class="form-control" value="<?= $w['status_keluarga'] ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Modal Tambah -->
+                <div class="modal fade" id="addModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="tambah-warga.php" method="POST">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Add New Warga</h5>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label>ID NIK</label>
+                                        <input type="text" name="id_nik" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nomor KK</label>
+                                        <input type="text" name="nomor_kk" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nama</label>
+                                        <input type="text" name="nama" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Alamat</label>
+                                        <input type="text" name="alamat" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Pekerjaan</label>
+                                        <input type="text" name="pekerjaan" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status Keluarga</label>
+                                        <input type="text" name="status_keluarga" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-success">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
     </div>
-    <nav class="flex-1 p-4 space-y-2">
-      <a href="data-warga.php" class="block py-2 px-3 rounded bg-gray-700">📋 Data Warga</a>
-      <a href="data-kas.php" class="block py-2 px-3 rounded hover:bg-gray-700">💰 Data Kas</a>
-      <a href="tambah-kas.php" class="block py-2 px-3 rounded hover:bg-gray-700">➕ Tambah Data Kas</a>
-      <a href="tambah-warga.php" class="block py-2 px-3 rounded hover:bg-gray-700">➕ Tambah Warga</a>
-      <a href="logout.php" class="block py-2 px-3 rounded hover:bg-red-600 mt-4">🚪 Keluar</a>
-    </nav>
-  </aside>
-
-  <!-- Main Content -->
-  <div class="flex-1 flex flex-col">
-
-    <!-- Header -->
-    <header class="bg-white shadow p-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold">Data Warga RT 04 / RW 02</h1>
-      <img src="backend/cssadmin/logodepan.jpg" alt="Logo RT" class="w-24">
-    </header>
-
-    <!-- Table Data -->
-    <main class="p-6 overflow-auto">
-      <table class="min-w-full bg-white rounded-lg shadow">
-        <thead>
-          <tr class="bg-gray-200 text-gray-700">
-            <th class="py-2 px-4 text-left">NIK</th>
-            <th class="py-2 px-4 text-left">Nama</th>
-            <th class="py-2 px-4 text-left">Alamat</th>
-            <th class="py-2 px-4 text-left">Pekerjaan</th>
-            <th class="py-2 px-4 text-left">Status</th>
-            <th class="py-2 px-4 text-center">Foto</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php if(empty($warga)): ?>
-            <tr>
-              <td colspan="6" class="text-center py-4">Belum ada data warga</td>
-            </tr>
-          <?php else: ?>
-            <?php foreach($warga as $row): ?>
-            <tr class="border-b hover:bg-gray-50">
-              <td class="py-2 px-4"><?= $row['id_nik'] ?></td>
-              <td class="py-2 px-4"><?= $row['nama'] ?></td>
-              <td class="py-2 px-4"><?= $row['alamat'] ?></td>
-              <td class="py-2 px-4"><?= $row['pekerjaan'] ?></td>
-              <td class="py-2 px-4"><?= $row['status_keluarga'] ?></td>
-              <td class="py-2 px-4 text-center">
-                <?php if(!empty($row['foto'])): ?>
-                  <img src="assets/img/foto_warga/<?= $row['foto'] ?>" class="w-10 h-10 rounded-full mx-auto">
-                <?php else: ?>
-                  <span class="text-gray-400 italic">Belum ada foto</span>
-                <?php endif; ?>
-              </td>
-            </tr>
-            <?php endforeach; ?>
-          <?php endif; ?>
-        </tbody>
-      </table>
-    </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white text-center py-3">
-      © 2025 | SI-KAMPUNG JOS - dibuat oleh Hafiz
-    </footer>
-  </div>
+    <?php include 'includes/footer.php'; ?>
 </div>
 
+<!-- JS -->
+<?php include 'includes/js.php'; ?>
 </body>
 </html>

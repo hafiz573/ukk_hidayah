@@ -61,7 +61,7 @@ session_start();
             <li><a href="team.php">Pengurus</a></li>
             <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
             <li>
-              <a href="admin.php"> Admin</a>
+              <a href="data-kas.php">Admin</a>
             </li>
             <?php endif; ?>
           </ul>

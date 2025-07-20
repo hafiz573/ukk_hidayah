@@ -73,7 +73,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   <div class="login-container">
     <!-- Logo -->
-    <img src="backend/cssadmin/logodepan.jpg" alt="Logo SI-KAMPUNG JOS">
+    <img src="./backend/cssadmin/logodepan.jpg" alt="Logo SI-KAMPUNG JOS">
+
 
     <!-- Judul -->
     <h4>Silahkan Login</h4>
