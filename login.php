@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Simpan ke session
         $_SESSION['username'] = $user['username'];
         $_SESSION['role']     = $user['role']; // Pastikan kolom 'role' ada di tabel users
+        $_SESSION['loggedin'] = true;
 
         echo "<script>alert('Login berhasil!'); window.location='index.php';</script>";
         exit;

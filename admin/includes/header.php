@@ -154,7 +154,7 @@ $message_count = 0;
             confirmButtonText: 'Yes, Keluarkan Saya!'
         }).then((result) => {
             if (result.value) {
-                window.location.href = './logout/';
+                window.location.href = './logout/logout.php';
             }
         });
     }

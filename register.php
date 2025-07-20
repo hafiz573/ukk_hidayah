@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script>alert('Passwords do not match');</script>";
     } else {
         // // HASH password biar aman
-        // $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         // 1️⃣ Tambahkan ke warga (kalau belum ada)
         mysqli_query(
