@@ -130,7 +130,7 @@ if ($result) {
                 <div class="modal fade" id="addModal" tabindex="-1">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
-                            <form action="tambah-warga.php" method="POST">
+                            <form action="tambah_warga.php" method="POST">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Add New Warga</h5>
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>

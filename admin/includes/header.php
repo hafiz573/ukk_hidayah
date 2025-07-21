@@ -14,14 +14,14 @@ $menuItems = [
         "menuTitle" => "Warga",
         "icon" => "fa fa-info-circle",
         "pages" => [
-            ["title" => "Info Warga", "url" => "data-warga.php"],
+            ["title" => "Info Warga", "url" => "data_warga.php"],
         ],
     ],
     [
         "menuTitle" => "Laporan",
         "icon" => "fa fa-briefcase",
         "pages" => [
-            ["title" => "KAS Warga", "url" => "data-kas.php"],
+            ["title" => "KAS Warga", "url" => "data_kas.php"],
             ["title" => "Keuangan RT", "url" => "keuangan_rt.php"],
         ],
     ],
