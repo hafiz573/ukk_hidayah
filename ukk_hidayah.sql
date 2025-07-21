@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 17, 2025 at 09:39 AM
+-- Generation Time: Jul 21, 2025 at 05:33 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `kas` (
   `id_kas` int(11) NOT NULL,
   `id_nik` varchar(16) NOT NULL,
+  `nama` varchar(100) NOT NULL,
   `bln_1` decimal(10,2) NOT NULL,
   `bln_2` decimal(10,2) NOT NULL,
   `bln_3` decimal(10,2) NOT NULL,
@@ -130,12 +131,6 @@ ALTER TABLE `warga`
 --
 ALTER TABLE `kas`
   ADD CONSTRAINT `fk_kas_warga` FOREIGN KEY (`id_nik`) REFERENCES `warga` (`id_nik`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `users`
---
-ALTER TABLE `users`
-  ADD CONSTRAINT `fk_user_warga` FOREIGN KEY (`id_nik`) REFERENCES `warga` (`id_nik`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
