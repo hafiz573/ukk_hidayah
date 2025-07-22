@@ -1,5 +1,5 @@
 <?php
-$connect = mysqli_connect('localhost', 'root', '', 'ukk_hidayah');
+include '../backend/config/connect.php';
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];

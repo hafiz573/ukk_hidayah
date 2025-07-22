@@ -1,5 +1,5 @@
 <?php
-$connect = mysqli_connect('localhost', 'root', '', 'ukk_hidayah');
+include '../backend/config/connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_nik = $_POST['id_nik'];
