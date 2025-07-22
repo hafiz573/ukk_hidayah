@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 21, 2025 at 05:33 AM
+-- Generation Time: Jul 21, 2025 at 08:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -59,7 +59,8 @@ CREATE TABLE `keuangan_rt` (
   `pendapatan` int(15) NOT NULL,
   `saldo_awal` int(15) NOT NULL,
   `saldo_akhir` int(15) NOT NULL,
-  `keterangan` varchar(100) NOT NULL
+  `keterangan` varchar(100) NOT NULL,
+  `tanggal` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -121,6 +122,16 @@ ALTER TABLE `warga`
   ADD PRIMARY KEY (`id_nik`),
   ADD UNIQUE KEY `id_nik` (`id_nik`),
   ADD UNIQUE KEY `id_nik_2` (`id_nik`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `keuangan_rt`
+--
+ALTER TABLE `keuangan_rt`
+  MODIFY `id_kas` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

@@ -60,7 +60,12 @@ session_start();
             <li><a href="contact.php">Hubungi</a></li>
             <li><a href="team.php">Pengurus</a></li>
             <?php 
-            if (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
+            if (isset($_SESSION['role']) && $_SESSION['role'] === 'Warga'): ?>
+
+              <li>
+                <a href="warga/">Warga</a>
+              </li>
+            <?php elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'Admin'): ?>
               <li>
                 <a href="admin/">Admin</a>
               </li>
