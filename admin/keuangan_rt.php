@@ -46,20 +46,29 @@ $bulan_list = [
 
 // Ambil data keuangan RT
 $keuangan_data = [];
-$total_pemasukan = 0;
+$pemasukan_data = [];
+$pengeluaran_data = [];
+$total_pemasukan_dadakan = 0;
 $total_pengeluaran = 0;
 
 $result = mysqli_query($connect, "SELECT * FROM keuangan_rt ORDER BY id_kas ASC");
 if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
-        $total_pemasukan += $row['pendapatan'];
-        $total_pengeluaran += $row['pengeluaran'];
+        if ($row['pendapatan_dadakan'] > 0) {
+            $pemasukan_data[] = $row;
+            $total_pemasukan_dadakan += $row['pendapatan_dadakan'];
+        }
+        if ($row['pengeluaran'] > 0) {
+            $pengeluaran_data[] = $row;
+            $total_pengeluaran += $row['pengeluaran'];
+        }
         $keuangan_data[] = $row;
     }
 }
 
 // Calculate Saldo Akhir dynamically
-$saldo_akhir = $total_pemasukan - $total_pengeluaran;
+$total_kas_warga = $total_kas; // dari tabel kas
+$saldo_akhir = $total_kas_warga + $total_pemasukan_dadakan - $total_pengeluaran;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,10 +89,10 @@ $saldo_akhir = $total_pemasukan - $total_pengeluaran;
 
             <!-- Card Total Kas (dari tabel kas), Pemasukan, Pengeluaran -->
             <div class="row mb-3">
-                <div class="col-lg-4 col-12">
+                <div class="col-lg-3 col-12">
                     <div class="small-box bg-success">
                         <div class="inner">
-                            <h3>Rp<?= number_format($total_kas,0,",",".") ?></h3>
+                            <h3>Rp<?= number_format($total_kas_warga,0,",",".") ?></h3>
                             <p>Total Kas (Warga)</p>
                         </div>
                         <div class="icon">
@@ -91,18 +100,7 @@ $saldo_akhir = $total_pemasukan - $total_pengeluaran;
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-12">
-                    <div class="small-box bg-success">
-                        <div class="inner">
-                            <h3>Rp<?= number_format($total_pemasukan,0,",",".") ?></h3>
-                            <p>Total Pemasukan</p>
-                        </div>
-                        <div class="icon">
-                            <i class="fas fa-arrow-down"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-12">
+                <div class="col-lg-3 col-12">
                     <div class="small-box bg-danger">
                         <div class="inner">
                             <h3>Rp<?= number_format($total_pengeluaran,0,",",".") ?></h3>
@@ -113,9 +111,34 @@ $saldo_akhir = $total_pemasukan - $total_pengeluaran;
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-3 col-12">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>Rp<?= number_format($total_pemasukan_dadakan,0,",",".") ?></h3>
+                            <p>Total Pemasukan Dadakan</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-12">
+                    <div class="small-box bg-primary">
+                        <div class="inner">
+                            <h3>Rp<?= number_format($saldo_akhir,0,",",".") ?></h3>
+                            <p>Total Akhir Kas</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-12 text-right mb-2">
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#addKegiatanModal">
-                        <i class="fas fa-plus"></i> Add Kegiatan
+                    <button class="btn btn-info" data-toggle="modal" data-target="#addPemasukanModal">
+                        <i class="fas fa-plus"></i> Tambah Pemasukan Dadakan
+                    </button>
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#addPengeluaranModal">
+                        <i class="fas fa-plus"></i> Tambah Pengeluaran
                     </button>
                     <button class="btn btn-success" onclick="window.print()">
                         <i class="fas fa-print"></i> Cetak Laporan
@@ -123,13 +146,13 @@ $saldo_akhir = $total_pemasukan - $total_pengeluaran;
                 </div>
             </div>
 
-            <!-- Modal Add Kegiatan -->
-            <div class="modal fade" id="addKegiatanModal" tabindex="-1">
+            <!-- Modal Add Pemasukan Dadakan -->
+            <div class="modal fade" id="addPemasukanModal" tabindex="-1">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <form action="tambah_kegiatan.php" method="POST">
                             <div class="modal-header">
-                                <h5 class="modal-title">Tambah Kegiatan Keuangan RT</h5>
+                                <h5 class="modal-title">Tambah Pemasukan Dadakan</h5>
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
                             <div class="modal-body">
@@ -138,12 +161,8 @@ $saldo_akhir = $total_pemasukan - $total_pengeluaran;
                                     <input type="text" name="item_kegiatan" class="form-control" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Pemasukan</label>
-                                    <input type="number" name="pendapatan" class="form-control" value="0" min="0">
-                                </div>
-                                <div class="form-group">
-                                    <label>Pengeluaran</label>
-                                    <input type="number" name="pengeluaran" class="form-control" value="0" min="0">
+                                    <label>Pemasukan Dadakan</label>
+                                    <input type="number" name="pendapatan_dadakan" class="form-control" value="0" min="0" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Keterangan</label>
@@ -153,6 +172,7 @@ $saldo_akhir = $total_pemasukan - $total_pengeluaran;
                                     <label>Tanggal</label>
                                     <input type="date" name="tanggal" class="form-control" value="<?= date('Y-m-d') ?>">
                                 </div>
+                                <input type="hidden" name="tipe" value="dadakan">
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -163,6 +183,43 @@ $saldo_akhir = $total_pemasukan - $total_pengeluaran;
                 </div>
             </div>
 
+            <!-- Modal Add Pengeluaran -->
+            <div class="modal fade" id="addPengeluaranModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="tambah_kegiatan.php" method="POST">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Tambah Pengeluaran</h5>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Item Kegiatan</label>
+                                    <input type="text" name="item_kegiatan" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Pengeluaran</label>
+                                    <input type="number" name="pengeluaran" class="form-control" value="0" min="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Keterangan</label>
+                                    <input type="text" name="keterangan" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tanggal</label>
+                                    <input type="date" name="tanggal" class="form-control" value="<?= date('Y-m-d') ?>">
+                                </div>
+                                <input type="hidden" name="tipe" value="pengeluaran">
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Modal Edit Kegiatan -->
             <?php foreach ($keuangan_data as $row): ?>
             <div class="modal fade" id="editKegiatanModal<?= $row['id_kas'] ?>" tabindex="-1">
@@ -180,8 +237,8 @@ $saldo_akhir = $total_pemasukan - $total_pengeluaran;
                                     <input type="text" name="item_kegiatan" class="form-control" value="<?= htmlspecialchars($row['item_kegiatan']) ?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label>Pemasukan</label>
-                                    <input type="number" name="pendapatan" class="form-control" value="<?= $row['pendapatan'] ?>" min="0">
+                                    <label>Pemasukan Dadakan</label>
+                                    <input type="number" name="pendapatan_dadakan" class="form-control" value="<?= $row['pendapatan_dadakan'] ?>" min="0">
                                 </div>
                                 <div class="form-group">
                                     <label>Pengeluaran</label>
@@ -206,40 +263,39 @@ $saldo_akhir = $total_pemasukan - $total_pengeluaran;
             </div>
             <?php endforeach; ?>
 
-            <!-- Tabel Keuangan RT -->
+            <!-- Tabel Pemasukan Dadakan -->
             <div class="row">
                 <div class="col-12">
+                    <h4>Pemasukan Dadakan</h4>
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>No</th>
                                 <th>Item Kegiatan</th>
-                                <th>Pemasukan</th>
-                                <th>Pengeluaran</th>
+                                <th>Pemasukan Dadakan</th>
                                 <th>Keterangan</th>
                                 <th>Tanggal</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                        <?php if(empty($keuangan_data)): ?>
-                            <tr><td colspan="6" class="text-center">Belum ada data keuangan</td></tr>
+                        <?php if(empty($pemasukan_data)): ?>
+                            <tr><td colspan="6" class="text-center">Belum ada data pemasukan dadakan</td></tr>
                         <?php else: ?>
-                        <?php $no = 1; foreach ($keuangan_data as $row): ?>
+                        <?php $no = 1; foreach ($pemasukan_data as $row): ?>
                             <tr>
                                 <td><?= $no++ ?></td>
                                 <td><?= htmlspecialchars($row['item_kegiatan']) ?></td>
-                                <td>Rp<?= number_format($row['pendapatan'],0,",",".") ?></td>
-                                <td>Rp<?= number_format($row['pengeluaran'],0,",",".") ?></td>
+                                <td>Rp<?= number_format($row['pendapatan_dadakan'],0,",",".") ?></td>
                                 <td><?= htmlspecialchars($row['keterangan']) ?></td>
                                 <td><?= $row['tanggal'] ?></td>
                                 <td>
                                     <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editKegiatanModal<?= $row['id_kas'] ?>">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
-                                    <a href="delete_kegiatan.php?id=<?= $row['id_kas'] ?>" 
+                                    <a href="delete_kegiatan.php?id=<?= $row['id_kas'] ?>&type=dadakan" 
                                        class="btn btn-sm btn-danger"
-                                       onclick="return confirm('Hapus kegiatan ini?')">
+                                       onclick="return confirm('Hapus pemasukan dadakan ini?')">
                                        <i class="fas fa-trash"></i> Delete
                                     </a>
                                 </td>
@@ -247,16 +303,72 @@ $saldo_akhir = $total_pemasukan - $total_pengeluaran;
                         <?php endforeach; ?>
                         <tr>
                             <th colspan="2" class="text-right">Total</th>
-                            <th>Rp<?= number_format($total_pemasukan,0,",",".") ?></th>
-                            <th>Rp<?= number_format($total_pengeluaran,0,",",".") ?></th>
-                            <th></th>
-                        </tr>
-                        <tr>
-                            <th colspan="2" class="text-right">Saldo Akhir</th>
-                            <th colspan="3">Rp<?= number_format($saldo_akhir,0,",",".") ?></th>
+                            <th>Rp<?= number_format($total_pemasukan_dadakan,0,",",".") ?></th>
+                            <th colspan="3"></th>
                         </tr>
                         <?php endif; ?>
                         </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabel Pengeluaran -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4>Pengeluaran</h4>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Item Kegiatan</th>
+                                <th>Pengeluaran</th>
+                                <th>Keterangan</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php if(empty($pengeluaran_data)): ?>
+                            <tr><td colspan="6" class="text-center">Belum ada data pengeluaran</td></tr>
+                        <?php else: ?>
+                        <?php $no = 1; foreach ($pengeluaran_data as $row): ?>
+                            <tr>
+                                <td><?= $no++ ?></td>
+                                <td><?= htmlspecialchars($row['item_kegiatan']) ?></td>
+                                <td>Rp<?= number_format($row['pengeluaran'],0,",",".") ?></td>
+                                <td><?= htmlspecialchars($row['keterangan']) ?></td>
+                                <td><?= $row['tanggal'] ?></td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editKegiatanModal<?= $row['id_kas'] ?>">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <a href="delete_kegiatan.php?id=<?= $row['id_kas'] ?>&type=pengeluaran" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Hapus pengeluaran ini?')">
+                                       <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        <tr>
+                            <th colspan="2" class="text-right">Total</th>
+                            <th>Rp<?= number_format($total_pengeluaran,0,",",".") ?></th>
+                            <th colspan="3"></th>
+                        </tr>
+                        <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Saldo Akhir -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th class="text-right">Saldo Akhir</th>
+                            <th>Rp<?= number_format($saldo_akhir,0,",",".") ?></th>
+                        </tr>
                     </table>
                 </div>
             </div>
