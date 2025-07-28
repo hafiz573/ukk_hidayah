@@ -85,14 +85,16 @@ $bulan_list = [
                                 <td>Rp<?= number_format($k['total_bayar'],0,",",".") ?></td>
                                 <td><?= htmlspecialchars($k['keterangan'] ?? '') ?></td>
                                 <td>
-                                    <button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editKasModal<?= $k['id_kas'] ?>">
+                                    <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editKasModal<?= $k['id_kas'] ?>_<?= $k['id_nik'] ?>">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
-                                    <a href="delete_kas.php?id=<?= $k['id_kas'] ?>" 
-                                       class="btn btn-sm btn-danger"
-                                       onclick="return confirm('Hapus data kas ini?')">
-                                       <i class="fas fa-trash"></i> Delete
-                                    </a>
+                                    <form action="delete_kas.php" method="POST" style="display:inline-block;">
+                                        <input type="hidden" name="id_kas" value="<?= $k['id_kas'] ?>">
+                                        <input type="hidden" name="id_nik" value="<?= $k['id_nik'] ?>">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -147,13 +149,14 @@ $bulan_list = [
 
             <!-- Modal Edit Kas -->
             <?php foreach ($kas_data as $k): ?>
-            <div class="modal fade" id="editKasModal<?= $k['id_kas'] ?>" tabindex="-1">
+            <div class="modal fade" id="editKasModal<?= $k['id_kas'] ?>_<?= $k['id_nik'] ?>" tabindex="-1">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <form action="update_kas.php" method="POST">
-                            <input type="hidden" name="id" value="<?= $k['id_kas'] ?>">
+                            <input type="hidden" name="id_kas" value="<?= $k['id_kas'] ?>">
+                            <input type="hidden" name="id_nik" value="<?= $k['id_nik'] ?>">
                             <div class="modal-header">
-                                <h5 class="modal-title">Edit Data Kas - <?= $k['nama'] ?></h5>
+                                <h5 class="modal-title">Edit Data Kas - <?= $k['id_nik'] ?> - <?= $k['nama'] ?></h5>
                                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                             </div>
                             <div class="modal-body">

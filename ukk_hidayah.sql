@@ -101,7 +101,7 @@ CREATE TABLE `warga` (
 -- Indexes for table `kas`
 --
 ALTER TABLE `kas`
-  ADD PRIMARY KEY (`id_kas`,`id_nik`),
+  ADD PRIMARY KEY (`id_kas`, `id_nik`),
   ADD KEY `fk_kas_warga` (`id_nik`);
 
 --

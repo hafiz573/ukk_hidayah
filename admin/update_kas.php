@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     $update_fields[] = "keterangan='$keterangan'";
 
-    $sql = "UPDATE kas SET ".implode(",", $update_fields)." WHERE id_kas='$id_kas'";
+    $sql = "UPDATE kas SET ".implode(",", $update_fields)." WHERE id_kas='$id_kas' AND id_nik='{$_POST['id_nik']}'";
     mysqli_query($connect, $sql);
 }
 
